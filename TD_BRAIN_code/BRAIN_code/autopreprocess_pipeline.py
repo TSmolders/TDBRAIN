@@ -9,8 +9,8 @@ copyright: Research Institute Brainclinics, Brainclinics Foundation, Nijmegen, t
 
 """
 
-from TD_BRAIN_code.autopreprocessing import dataset as ds
-from TD_BRAIN_code.inout import FilepathFinder as FF
+from BRAIN_code.autopreprocessing import dataset as ds
+from BRAIN_code.inout import FilepathFinder as FF
 import os
 from pathlib import Path
 import numpy as np
@@ -50,6 +50,9 @@ def autopreprocess_standard(varargsin, subject = None, startsubj =0):
 
     if not 'exclude' in varargsin:
         varargsin['exclude'] = []
+
+    if varargsin['condition']: # added because of unboundlocalerror
+        reqconds = varargsin['condition']
 
     rawreport = 'yes'
 

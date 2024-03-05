@@ -182,10 +182,10 @@ class interdataset(object):
                     ''' select the segments around the artifacts (as much as possible) '''
                     ''' from the first sample to the beginning of the last artifact '''
                     t = 0
-                    trials=np.zeros((1,self.data.shape[1],np.int(self.Fs*epochlength)));marktrials = trials.copy();
+                    trials=np.zeros((1,self.data.shape[1],np.int32(self.Fs*epochlength)));marktrials = trials.copy();
                     trl = np.array([0,0],dtype=int)
                     for i in range(ARTtrl.shape[0]):
-                        if (ARTtrl[i,0]-t)>(np.int(epochlength*self.Fs)):
+                        if (ARTtrl[i,0]-t)>(np.int32(epochlength*self.Fs)):
                             tmp = self.data[:,:,t:ARTtrl[i,0]]
                             segs,segstrl = EEGsegmenting(np.asarray(tmp),epochlength)
                             trials = np.concatenate([trials,segs],axis=0)
@@ -368,7 +368,7 @@ class interdataset(object):
 
                 segments = []
                 ticklocs = []
-                #ticks = np.arange(0,np.int(n_samples/self.Fs),np.around((np.int((n_samples/self.Fs))/10),decimals=1))
+                #ticks = np.arange(0,np.int32(n_samples/self.Fs),np.around((np.int32((n_samples/self.Fs))/10),decimals=1))
                 for i in range(n_rows):
                     segments.append(np.column_stack((t, data[seg,i,:])))
                     ticklocs.append(i * dr)
@@ -730,12 +730,12 @@ class interdataset(object):
 
 def EEGsegmenting(inp, trllength, fs=500, overlap=0):
 
-    n_samples = np.int(trllength*fs)
+    n_samples = np.int32(trllength*fs)
     stepsize = (1-overlap)*n_samples
 
     ''' define the size of the data '''
     n_totalsamples, n_rows = inp.shape[-1], inp.shape[1]
-    n_trials = np.int(n_totalsamples/stepsize)
+    n_trials = np.int32(n_totalsamples/stepsize)
 
     trl = np.array([0,0],dtype=int)
     t = 0
@@ -745,7 +745,7 @@ def EEGsegmenting(inp, trllength, fs=500, overlap=0):
 
     trl = trl[1:]
 
-    data = np.zeros((n_trials, n_rows, np.int(n_samples)))
+    data = np.zeros((n_trials, n_rows, np.int32(n_samples)))
     for i in range(n_trials):
         if trl[i,0] <= n_totalsamples-n_samples:
             data[i,:,:]= inp[0,:,trl[i,0]:trl[i,1]]

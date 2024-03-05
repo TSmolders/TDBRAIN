@@ -25,7 +25,7 @@ def computeFFT(data):
     from scipy.signal import hann
     hannwin = np.array(hann(data.shape[-1]))
     power = np.squeeze(np.mean(np.abs(np.fft.fft(data*hannwin))**2,axis=0))
-    freqs = np.linspace(0,varargs['fs']/2,np.int(len(power)/2)) #power1
+    freqs = np.linspace(0,varargs['fs']/2,np.int32(len(power)/2)) #power1
     return power[:len(freqs)], freqs
 
 
@@ -55,7 +55,7 @@ for f in files.selectedfiles:
     output['session'].append(sessid)
     output['conds'].append(f.rsplit('_')[-2])
     #read belonging tsvdat data
-    idx = np.where((tsvdat['subID']==np.int(sid)) & (tsvdat['sessID']==np.int(sessid)))[0][0]
+    idx = np.where((tsvdat['subID']==np.int32(sid)) & (tsvdat['sessID']==np.int32(sessid)))[0][0]
     output['age'].append(tsvdat['age'][idx])
     output['sex'].append(tsvdat['gender'][idx])
     output['power'] = np.vstack((output['power'],np.squeeze(computeFFT(chandata)[0])))
