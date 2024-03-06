@@ -10,7 +10,7 @@ import os
 import matplotlib.pyplot as plt
 import scipy.io as sio
 
-class interdataset(object):
+class interdataset(object): ##TUUR: ALS IK HET GOED BEGRIJP IS DEZE .PY FILE VOOR DE FEATURE EXTRACTION / INTERPROCESSING VOOR RESULTATEN IN DE VORM VAN EEN 'RESULTS_MANUSCRIPT'. 
     def __init__(self, d):
         self.__dict__ = d
 
@@ -50,7 +50,7 @@ class interdataset(object):
             print('was not able to copy')
             return self
 
-    def downsample(self, downsample = None):
+    def downsample(self, downsample = None): 
         self.data = self.data[:,:,np.arange(0,self.data.shape[-1],downsample)]
 
     def rereference(self, newrefchan = None):
@@ -118,7 +118,7 @@ class interdataset(object):
         self.data = sosfiltfilt(sos, self.data)
 
 
-    def segment(self, marking = 'no', trllength = 2, remove_artifact = 'no'):
+    def segment(self, marking = 'no', trllength = 2, remove_artifact = 'no'): ##TUUR: ALS IK REMOVE_ARTIFACTS='YES' WIL VOOR MIJN PREPROCESSING, MOET IK HET DAN OOK HIER AANPASSEN? DENK HET NIET, WANT DEZE FUNCTIE WORDT GEBRUIKT OP DE PREPROCESSED DATA, DUS DAN ZOUDEN ARTIFACTS AL ZIJN REMOVED.
         '''
         Segment the data into epochs, either removing the artifacted epochs at
         the same time, or not based on the input.

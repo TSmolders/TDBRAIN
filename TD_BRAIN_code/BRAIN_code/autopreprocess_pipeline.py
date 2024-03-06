@@ -9,8 +9,8 @@ copyright: Research Institute Brainclinics, Brainclinics Foundation, Nijmegen, t
 
 """
 
-from TD_BRAIN_code.autopreprocessing import dataset as ds
-from TD_BRAIN_code.inout import FilepathFinder as FF
+from BRAIN_code.autopreprocessing import dataset as ds
+from BRAIN_code.inout import FilepathFinder as FF
 import os
 from pathlib import Path
 import numpy as np
@@ -84,7 +84,7 @@ def autopreprocess_standard(varargsin, subject = None, startsubj =0):
                 if len(conditions)>0:
                     inname = os.path.join(sourcepath, subs[s], sessions[sess]+'/eeg/',conditions[c])
                     #try:
-                    tmpdat = ds(inname)
+                    tmpdat = ds(inname) ##TUUR: ALS IK HET GOED BEGRIJP WORDT ER IN AUTOPREPROCESSING.PY EEN KLASSE 'DATASET' GEDEFINIEERD, DIE DE DATA INLAADT EN VERVOLGENS PREPROCESSED
                     tmpdat.loaddata()
                     tmpdat.bipolarEOG()
                     tmpdat.apply_filters()
@@ -98,7 +98,8 @@ def autopreprocess_standard(varargsin, subject = None, startsubj =0):
 
                     trllength = 'all'
                     npy = copy.deepcopy(tmpdat)
-                    npy.segment(trllength = trllength, remove_artifact='no')
+                    npy.segment(trllength = trllength, remove_artifact='no') ##TUUR: REMOVE_ARTIFACT='NO', DUS DE ARTIFACTS WORDEN NIET VERWIJDERD, MAAR ANDERE DINGEN WORDEN WEL GELIJK TOEGEPAST OP DE RAUWE DATA. ZIE AUTOPREPROCESSING.PY VOOR WAT WEL EN WAT NIET.
+                                                                             ##TUUR: ALS WE DE ARTIFACTS DUS WILLEN VERWIJDEREN, MOET IK HET HIER AANPASSEN NAAR 'YES'
                     # subpath = os.path.join(preprocpath,subs[s])
                     # Path(subpath).mkdir(parents=True, exist_ok=True)
                     sesspath = os.path.join(preprocpath,subs[s],sessions[sess]+'/eeg/')
@@ -108,7 +109,7 @@ def autopreprocess_standard(varargsin, subject = None, startsubj =0):
                     if rawreport == 'yes':#for the raw data report
                         lengthtrl = 10
                         pdf = copy.deepcopy(tmpdat)
-                        pdf.segment(trllength = lengthtrl, remove_artifact='no')
+                        pdf.segment(trllength = lengthtrl, remove_artifact='no') ##TUUR: EN HIER OOK VOOR DE PDF
                         pdf.save_pdfs(sesspath)
                    # except:
                    #     print('processing of '+inname+ ' went wrong')

@@ -178,7 +178,7 @@ class dataset:
             self.data = tmp.values.T.astype(float)
             self.labels=np.array(self.labels)
 
-    def bipolarEOG(self):
+    def bipolarEOG(self): ##TUUR: BIPOLAR EOG WORDT BEREKENT VOOR EEN AANTAL SPECIFIEKE CHANNELS, MAAR IN DEZE FUNCTIE WORDT NIKS GELIJK AANGEPAST AAN DE RAUWE DATA
         '''
             Compute the bipolar EOG from the ['VPVA','VNVB','HPHL','HNHR'] EOG
             recordings (only for the raw (.csv) data!!).
@@ -200,7 +200,7 @@ class dataset:
         self.data = np.vstack((self.data[0:26],[(self.data[VPVA] - self.data[VNVB]), (self.data[HPHL] - self.data[HNHR])], self.data[30:]))
         self.labels = np.append(self.labels[0:26],np.append(['VEOG','HEOG'], self.labels[30:]))
 
-    def demean(self):
+    def demean(self): ##TUUR: BASELINE CORRECTIE, MAAR DEZE FUNCTIE WORDT NIET GECALLED? OOK NIET IN DE ANDERE .PY FILES? WORDT EEN BASELINE CORRECTIE DAN UBERHAUPT TOEGEPAST OP DE DATA?
         '''
             Subtract the overal mean (over time) from each EEG and EOG channel, as a sort of
             baseline correction to have all data revolve around the zero line.
@@ -216,7 +216,7 @@ class dataset:
         self.data[:30,:] = self.data[:30,:]-(np.nanmean(self.data[:30,:],axis=1).reshape((self.data[:30,:].shape[0],1)))
         self.info['demeaned']= 'all channels'
 
-    def apply_filters(self, trlpadding=10, hpfreq=0.5, lpfreq=100, notchfilt = 'yes', notchfreq=50, Q=100):
+    def apply_filters(self, trlpadding=10, hpfreq=0.5, lpfreq=100, notchfilt = 'yes', notchfreq=50, Q=100): ##TUUR: MET DEZE FUNCTIE WORDT DE DATA AL GEFILTERD, MAAR WAAROM DAN HIERONDER NOG DE FUNCTIE APPLY_BPFILTER?
         '''
             Apply filters, to remove low frequency trends, high-, and notch frequencies.
             - a bidirectional (zero phase) IIR filter will be aplied for the
@@ -272,7 +272,7 @@ class dataset:
         sos = butter(4, [high_pass, low_pass], btype='bandpass', analog=False, output = 'sos')
         self.data = sosfiltfilt(sos, self.data)
 
-    def correct_EOG(self, lpfreq = 15, vthreshold = 0.2, vpadding = 0.3, hthreshold = 0.2, hpadding =0.3):
+    def correct_EOG(self, lpfreq = 15, vthreshold = 0.2, vpadding = 0.3, hthreshold = 0.2, hpadding =0.3): ##TUUR: ALS IK HET GOED BEGRIJP WORDT DIT DUS DAADWERKELIJK OP DE RAUWE DATA TOEGEPAST, OOKAL IS REMOVE_ARTIFACT='NO' IN DE FUNCTIE SEGMENT()?
         '''
             Detect eyemovements and regress them onto the EEG data for each
             channel. Then remove the modeled eyemovement deflection from the
@@ -433,7 +433,7 @@ class dataset:
                 self.info[eye_channel[n]] = '0 artifacts detected @ threshold: '+str(threshold)+' and corrected'
 
 
-    def detect_emg(self, hpfreq = 75, lpfreq = 95, threshold = 4, padding=0.1):
+    def detect_emg(self, hpfreq = 75, lpfreq = 95, threshold = 4, padding=0.1): ##TUUR: DEZE FUNCTIE, EN ALLE VOLGENDE FUNCTIES MET 'DETECT' IN DE NAAM, WORDEN DUS NIET DIRECT TOEGEPAST OP DE RAUWE DATA ALS REMOVE_ARTIFACTS='NO'?
         ''' Detect EMG activity in the complete EEG channel set
             Parameters:
             -------------------------------------------------------------------
@@ -862,7 +862,8 @@ class dataset:
         self.labels = np.hstack((self.labels[:Och+1], 'artifacts', self.labels[Och+1:]))
         self.info['no. segments']=0
 
-    def segment(self, marking = 'no', trllength = 2, remove_artifact = 'no'):
+    def segment(self, marking = 'no', trllength = 2, remove_artifact = 'no'):   ##TUUR: REMOVE_ARTIFACT MOET IK DUS NAAR 'YES' ZETTEN ALS WE DE ARTIFACTS WILLEN VERWIJDEREN (ALS DEFAULT)
+                                                                                ##TUUR: DE DATA AROUND THE ARTIFACTS WORDT GEBRUIKT ALS ARTIFACTS WORDEN VERWIJDERD, IS DAT IN DEZE FUNCTIE DAN OOK AL TOEPASSELIJK ALS WE DE DATA NOG NIET GELIJK WILLEN SEGMENTEREN IN EPOCHS?
         '''
         Segment the data into epochs, either removing the artifacted epochs at
         the same time or not, based on the input. If removing artifacts the data
@@ -924,7 +925,7 @@ class dataset:
                 ARTtrl = ARTtrl[1:]
 
                 if remove_artifact == 'yes' and len(p) > 1:
-                    ''' select the segments around the artifacts (as much as possible) '''
+                    ''' select the segments around the artifacts (as much as possible) ''' 
                     ''' from the first sample to the beginning of the last artifact '''
                     t = 0
                     trials=np.zeros((1,self.data.shape[1],np.int(self.Fs*epochlength)));marktrials = trials.copy();
