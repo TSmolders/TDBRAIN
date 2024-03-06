@@ -24,7 +24,7 @@ from BRAIN_code.inout import FilepathFinder
 from BRAIN_code.interprocessing import interdataset as intds
 
 
-def end2end_alphaPowerandiAPF(varargs):
+def end2end_alphaPowerandiAPF(varargs): # Ik snap niet waar varargs vandaan komt, aangezien in de command line alleen de sourcepath wordt gespecificeerd, terwijl het een dictionary zou moeten zijn.
     """
     This function performs end-to-end processing of the neurophysiological validation
     presented in the TD-BRAIN database manuscript
